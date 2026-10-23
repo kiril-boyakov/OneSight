@@ -92,10 +92,17 @@ body{overflow-x:clip}header{height:96px;padding-inline:5%;position:relative;z-in
  .osti-thumb .osti-logo{max-width:240px;width:67%;margin:24px 0 48px}.project-detail h2{font-size:42px;margin:18px 0}.project-detail dl{font-size:14px;line-height:1.75}
  .osti-project{padding-top:40px}.project-next{padding-top:36px}.project-next h2{font-size:34px}.project-next p{font-size:15px}
  .portfolio-cta{margin-inline:8px}.portfolio-cta h2{font-size:clamp(32px,9.5vw,48px)}.portfolio-cta .button{min-height:52px;font-size:14px}
- .cinema-reveal{clip-path:none;transform:translateY(10px);transition:transform .55s ease}
- .cinema-reveal.is-visible,.cinema-reveal:focus-within{clip-path:none;transform:none}
- .cinema .hero h1{transform:none;opacity:1}.cinema .hero-star{transform:rotate(5deg)}
- .cinema .services::before,.cinema .about::before,.cinema .inquiry::before,.cinema .work-art{clip-path:none}
- .cinema .work-art .frame{transform:none}
+ .cinema-reveal{opacity:.35;clip-path:inset(0 0 8% 0);transform:translate3d(0,18px,0);transition:opacity .7s ease var(--delay,0ms),clip-path .85s cubic-bezier(.22,1,.36,1) var(--delay,0ms),transform .85s cubic-bezier(.22,1,.36,1) var(--delay,0ms)}
+ .cinema-reveal.is-visible,.cinema-reveal:focus-within{opacity:1;clip-path:inset(-12px -6px -12px -6px);transform:none}
+ .cinema .hero h1{transform:none;opacity:1}.cinema .hero-star{transform:translate3d(0,calc(var(--hero-progress,0)*-14px),0) rotate(calc(5deg + var(--hero-progress,0)*8deg))}
+ .cinema .services::before,.cinema .about::before,.cinema .inquiry::before{clip-path:inset(0 calc((1 - var(--entrance,1))*2%) round calc((1 - var(--entrance,1))*18px))}
+ .cinema .work-art{clip-path:inset(0 calc((1 - var(--entrance,1))*2%) round calc((1 - var(--entrance,1))*16px))}
+ .cinema .work-art .frame{transform:translate3d(0,calc(var(--drift,0px)*.35),0) scale(calc(.98 + var(--entrance,1)*.02))}
+ .work-art .target.focus-mark{width:110px;height:110px;right:-7%;top:12%;opacity:.28}
  dialog{max-width:calc(100vw - 32px);padding:24px}
 }
+/* Drawn arrows are consistent across iOS, Android and desktop fonts. */
+.ui-arrow{display:inline-block;width:1.1em;height:1.1em;vertical-align:-.15em;flex:0 0 auto;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.button .ui-arrow{width:24px;height:24px}.text-link>.ui-arrow{width:19px;height:19px}.button>span{display:inline-flex;align-items:center}.contact-placeholders .ui-arrow{width:12px;height:12px}
+@media(max-width:650px){header .button .ui-arrow{width:20px;height:20px}}
+@media(prefers-reduced-motion:reduce){.cinema-reveal,.cinema-reveal.is-visible,.cinema-reveal:focus-within{opacity:1;clip-path:none;transform:none}.cinema .hero-star{transform:rotate(5deg)}.cinema .work-art .frame{transform:none}.cinema .services::before,.cinema .about::before,.cinema .inquiry::before,.cinema .work-art{clip-path:none}}
