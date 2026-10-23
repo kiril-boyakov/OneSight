@@ -1,0 +1,29 @@
+/* OneSight's mark: four viewfinder corners and a floating optical lens. */
+.focus-mark{display:block;color:var(--red);width:clamp(140px,22vw,310px);height:clamp(140px,22vw,310px);font-size:0;line-height:1;animation:none;isolation:isolate;transform:rotate(-12deg)}
+.focus-mark i{position:absolute;width:27%;height:27%;border:solid currentColor;border-width:0}
+.focus-mark i:nth-child(1){left:0;top:0;border-width:clamp(5px,.8vw,11px) 0 0 clamp(5px,.8vw,11px)}
+.focus-mark i:nth-child(2){right:0;top:0;border-width:clamp(5px,.8vw,11px) clamp(5px,.8vw,11px) 0 0}
+.focus-mark i:nth-child(3){left:0;bottom:0;border-width:0 0 clamp(5px,.8vw,11px) clamp(5px,.8vw,11px)}
+.focus-mark i:nth-child(4){right:0;bottom:0;border-width:0 clamp(5px,.8vw,11px) clamp(5px,.8vw,11px) 0}
+.focus-mark b{position:absolute;width:53%;height:53%;border:2px solid currentColor;border-radius:50%;left:23.5%;top:23.5%}
+.focus-mark b::after{content:'';position:absolute;width:25%;height:25%;border-radius:50%;background:currentColor;top:37.5%;left:37.5%}
+.hero-star.focus-mark{right:0;bottom:0;pointer-events:none}
+.target.focus-mark{color:var(--white);width:230px;height:230px;opacity:.8;right:1%;top:18%;pointer-events:none}
+.work-art:hover .target.focus-mark{transform:rotate(12deg)}
+.inquiry-star.focus-mark{width:105px;height:105px;position:relative;color:var(--black);margin:40px 0 0 10px}
+section{animation:none}
+.cinema-reveal{opacity:.18;transform:translate3d(0,36px,0);transition:opacity .85s ease var(--delay,0ms),transform 1s cubic-bezier(.16,1,.3,1) var(--delay,0ms)}
+.cinema-reveal.is-visible,.cinema-reveal:focus-within{opacity:1;transform:none}
+.cinema .hero h1{transform:translate3d(0,calc(var(--hero-progress,0)*34px),0);opacity:calc(1 - var(--hero-progress,0)*.4)}
+.cinema .hero-star{transform:translate3d(0,calc(var(--hero-progress,0)*-65px),0) rotate(calc(-12deg + var(--hero-progress,0)*32deg))}
+.cinema .services,.cinema .about,.cinema .inquiry{position:relative;isolation:isolate}
+.cinema .services::before,.cinema .about::before,.cinema .inquiry::before{content:'';position:absolute;inset:0;z-index:-1;background:inherit;transform-origin:center top;clip-path:inset(0 calc((1 - var(--entrance,1))*4%) round calc((1 - var(--entrance,1))*45px))}
+.cinema .services{background:transparent}.cinema .services::before{background:var(--black)}
+.cinema .about{background:transparent}.cinema .about::before{background:#e8e5dd}
+.cinema .inquiry{background:transparent}.cinema .inquiry::before{background:var(--red)}
+.cinema .work-art{clip-path:inset(0 calc((1 - var(--entrance,1))*5%) round calc((1 - var(--entrance,1))*30px))}
+.cinema .work-art .frame{transform:translate3d(0,var(--drift,0px),0) scale(calc(.96 + var(--entrance,1)*.04))}
+.cinema .about-art .orbit{transform:rotate(-35deg) translate3d(0,var(--drift,0px),0)}
+.cinema .hero-line span:nth-child(2){transform:translateX(calc(var(--hero-progress,0)*-24px))}
+@media(max-width:580px){.hero-star.focus-mark{width:115px;height:115px;right:0;bottom:-4px}.target.focus-mark{width:140px;height:140px;right:-12%;top:25%}.cinema-reveal{transform:translate3d(0,22px,0)}.cinema .hero h1{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.cinema-reveal{opacity:1;transform:none;transition:none}.focus-mark{transform:none}}
