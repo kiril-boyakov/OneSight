@@ -20,3 +20,8 @@ body{overflow-x:clip}header{height:96px;padding-inline:5%;position:relative;z-in
 @media(max-width:580px){.hero h1{font-size:11.5vw}.hero-star.focus-mark{width:52px;height:65px;bottom:-20px;right:4%}.vertical-note{display:none}}
 @media(prefers-reduced-motion:reduce){.cinema-reveal{clip-path:none;transform:none}.hero-star.focus-mark{transform:rotate(5deg)}.work-art::before,.thumb-frame{transition:none}}
 .osti-thumb .osti-logo{display:block;width:70%;max-width:350px;height:auto;object-fit:contain;margin:35px 0 65px}.osti-thumb::after{display:none}
+/* Form focus follows the underline instead of drawing a white box. */
+.inquiry input:not([type="radio"]):not([type="checkbox"]),.inquiry textarea,.inquiry select{border-radius:0;transition:border-color .18s ease,box-shadow .18s ease,background-color .18s ease}
+.inquiry input:not([type="radio"]):not([type="checkbox"]):focus,.inquiry textarea:focus,.inquiry select:focus{outline:none;border-bottom-color:var(--black);box-shadow:0 2px 0 var(--black);background-color:#15151508}
+@media(forced-colors:active){.inquiry input:not([type="radio"]):not([type="checkbox"]):focus,.inquiry textarea:focus,.inquiry select:focus{outline:2px solid Highlight;outline-offset:2px}}
+@media(prefers-reduced-motion:reduce){.inquiry input,.inquiry textarea,.inquiry select{transition:none}}
