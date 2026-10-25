@@ -21,7 +21,7 @@ Serve `dist` as the web root on a static host. No install or build command is ne
 - The portfolio includes OneSight and the completed Osti redesign, with Osti's official logo and live website link.
 - WhatsApp is connected to +32 465 91 83 50. Email remains a placeholder.
 - The inquiry form is a preview. It does not send or store submissions or claim successful delivery. Connect a server-side delivery/storage service, validation and spam protection before using it for inquiries.
-- Add genuine client reviews when available; do not replace the review placeholder with invented endorsements.
+- Integrated review submission and owner moderation are implemented. Follow `REVIEW_SETUP.md` to activate Supabase storage and the owner account; the public form stays disabled until storage is available. Only approved reviews are displayed. The dashboard is at `/admin/`.
 - Confirm service area and business policies before adding location claims, structured business data or commitments.
 - Review privacy information to reflect the actual inquiry provider and retention policy.
 - Keep preview indexing restrictions until public launch is approved. For launch, set canonical and social URLs to the final domain, update robots directives and `robots.txt`, generate an XML sitemap and add verified structured data where appropriate.
