@@ -14,7 +14,7 @@ Run `python3 -m http.server 4173 --directory dist` from this repository, then op
 - Interactions: `dist/app.js`, `dist/motion.js`
 - Images and branding: `dist/assets/`, `dist/favicon.svg`, `dist/social.svg`
 
-Serve `dist` as the web root on a static host. No install or build command is needed. This repository stores source; it does not automatically deploy to GitHub Pages or update the existing Sites preview.
+Serve `dist` as the web root on a static host. No dependency installation is needed. After editing CSS, run `node scripts/prepare-styles.cjs` and commit the generated stylesheet bundles with the HTML. This repository stores source; it does not automatically deploy to GitHub Pages or update the existing Sites preview.
 
 ## Current state and launch checklist
 
@@ -24,7 +24,7 @@ Serve `dist` as the web root on a static host. No install or build command is ne
 - Integrated review submission and owner moderation are implemented. Follow `REVIEW_SETUP.md` to activate Supabase storage and the owner account; the public form stays disabled until storage is available. Only approved reviews are displayed. The dashboard is at `/admin/`.
 - Confirm service area and business policies before adding location claims, structured business data or commitments.
 - Review privacy information to reflect the actual inquiry provider and retention policy.
-- Keep preview indexing restrictions until public launch is approved. For launch, set canonical and social URLs to the final domain, update robots directives and `robots.txt`, generate an XML sitemap and add verified structured data where appropriate.
+- The public pages use canonical URLs on https://1sight.eu and an XML sitemap. Admin pages and non-production hostnames remain excluded from indexing.
 - Export the social SVG to a social-card-compatible image and verify sharing previews before launch.
 - Check responsive layouts, keyboard navigation, contrast, links, reduced-motion behavior and actual inquiry delivery before launch.
 

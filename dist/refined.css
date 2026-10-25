@@ -106,3 +106,12 @@ body{overflow-x:clip}header{height:96px;padding-inline:5%;position:relative;z-in
 .button .ui-arrow{width:24px;height:24px}.text-link>.ui-arrow{width:19px;height:19px}.button>span{display:inline-flex;align-items:center}.contact-placeholders .ui-arrow{width:12px;height:12px}
 @media(max-width:650px){header .button .ui-arrow{width:20px;height:20px}}
 @media(prefers-reduced-motion:reduce){.cinema-reveal,.cinema-reveal.is-visible,.cinema-reveal:focus-within{opacity:1;clip-path:none;transform:none}.cinema .hero-star{transform:rotate(5deg)}.cinema .work-art .frame{transform:none}.cinema .services::before,.cinema .about::before,.cinema .inquiry::before,.cinema .work-art{clip-path:none}}
+
+/* Content is always readable, even if a browser misses an intersection callback. */
+.cinema-reveal,.cinema-reveal.is-visible,.cinema-reveal:focus-within{opacity:1;clip-path:none;transform:none;transition:none}
+@media(prefers-reduced-motion:no-preference){
+ .cinema-reveal.is-visible{animation:onesight-enter .75s cubic-bezier(.22,1,.36,1) both;animation-delay:0ms}
+ @keyframes onesight-enter{from{opacity:1;transform:translate3d(0,18px,0)}to{opacity:1;transform:none}}
+}
+
+.muted{color:#6b6a64}.steps article>span,.hero-line span:last-child{color:#ba251c}
