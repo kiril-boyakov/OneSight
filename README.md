@@ -25,7 +25,7 @@ Serve `dist` as the web root on a static host. No dependency installation is nee
 - Confirm service area and business policies before adding location claims, structured business data or commitments.
 - Review privacy information to reflect the actual inquiry provider and retention policy.
 - The public pages use canonical URLs on https://1sight.eu and an XML sitemap. Admin pages and non-production hostnames remain excluded from indexing.
-- Export the social SVG to a social-card-compatible image and verify sharing previews before launch.
+- Public pages have PNG social preview images, Open Graph and Twitter metadata, descriptions, and structured page images. To regenerate the artwork, run `node scripts/prepare-previews.cjs` with the optional `sharp` package installed. Search and messaging services may cache previous previews.
 - Check responsive layouts, keyboard navigation, contrast, links, reduced-motion behavior and actual inquiry delivery before launch.
 
 ## Domain and search setup
