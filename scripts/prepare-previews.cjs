@@ -6,8 +6,5 @@ function artwork(lines){return `<svg xmlns="http://www.w3.org/2000/svg" width="1
 (async()=>{
  await sharp(Buffer.from(artwork(['Websites with','a point of view.']))).png().toFile('dist/onesight-preview.png');
  await sharp(Buffer.from(artwork(['Different ideas.','One perspective.']))).png().toFile('dist/onesight-work-preview.png');
- const icon=Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512"><rect width="512" height="512" rx="72" fill="#e83024"/><g stroke="#151515" stroke-width="15" fill="none"><path d="M85 170V85H170M342 85H427V170M85 342V427H170M342 427H427V342"/><circle cx="256" cy="256" r="90"/><circle cx="256" cy="256" r="22" fill="#151515"/></g></svg>');
- await sharp(icon).png().toFile('dist/onesight-icon.png');
- await sharp(icon).resize(180,180).png().toFile('dist/apple-touch-icon.png');
- await sharp(icon).resize(48,48).png().toFile('dist/favicon-48.png');
+ // Icons are maintained separately by scripts/prepare-icons.cjs.
 })();
