@@ -34,5 +34,10 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/inquiries.js": {
+      "maxDuration": 30
+    }
+  }
 }
