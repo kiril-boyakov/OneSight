@@ -17,12 +17,12 @@
   event.preventDefault();if(!form.reportValidity()||fields.disabled)return;
   const data=new FormData(form);
   requestId ||= crypto.randomUUID();
-  fields.disabled=true;status.textContent='Sending your inquiry…';
+  fields.disabled=true;form.setAttribute('aria-busy','true');status.textContent='Sending your inquiry…';
   try{
    const response=await fetch('/api/inquiries',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:requestId,name:data.get('name'),email:data.get('email'),business:data.get('business'),projectType:data.get('type'),description:data.get('description'),timeline:data.get('timeline'),website:data.get('website')})});
    const result=await response.json();if(!response.ok)throw Error(result.error||'Unable to send your inquiry. Please try again.');
    form.reset();requestId=null;status.textContent=result.message;
   }catch(error){status.textContent=error.message||'We could not confirm receipt. Please try again or contact us on WhatsApp.';}
-  finally{fields.disabled=false;}
+  finally{fields.disabled=false;form.removeAttribute('aria-busy');}
  });
 })();
