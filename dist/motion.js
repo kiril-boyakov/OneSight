@@ -15,7 +15,7 @@
   function load() {
     if (loaded || reduced.matches) return;
     loaded = true;
-    import('/experience-d1e8d3f391b1.js').catch(() => { loaded = false; });
+    import('/experience-fdfb0b3ac741.js').catch(() => { loaded = false; });
   }
   const defer = () => 'requestIdleCallback' in window ? requestIdleCallback(load, { timeout: 1600 }) : setTimeout(load, 300);
   if (document.readyState === 'complete') defer();

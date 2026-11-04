@@ -1,11 +1,12 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { animate } from 'motion/mini';
+import { setupProcessSequence } from './process-sequence.js';
 
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true });
 const media = gsap.matchMedia();
-media.add({ compact: '(max-width:650px)', wide: '(min-width:651px)', motion: '(prefers-reduced-motion: no-preference)' }, context => {
+media.add({ compact: '(max-width:650px)', wide: '(min-width:651px)', processGrid: '(min-width:701px)', processStack: '(max-width:380px)', motion: '(prefers-reduced-motion: no-preference)' }, context => {
   if (!context.conditions.motion) return;
   const compact = context.conditions.compact;
   const releases = [];
@@ -23,7 +24,7 @@ media.add({ compact: '(max-width:650px)', wide: '(min-width:651px)', motion: '(p
       play(entry.target, { transform: ['translateY(18px)', 'translateY(0px)'] }, { duration: .55 });
     }
   }, { threshold: .08 });
-  document.querySelectorAll('.intro h2,.service-list details,.steps article,.about-copy h2,.project-detail h2,.review-heading h2,.faq h2,.inquiry-intro h2').forEach(el => entrance.observe(el));
+  document.querySelectorAll('.intro h2,.service-list details,.about-copy h2,.project-detail h2,.review-heading h2,.faq h2,.inquiry-intro h2').forEach(el => entrance.observe(el));
   releases.push(() => entrance.disconnect());
 
   const progress = document.createElement('span');
@@ -41,12 +42,13 @@ media.add({ compact: '(max-width:650px)', wide: '(min-width:651px)', motion: '(p
     if (!subject) return;
     gsap.fromTo(subject, { y: compact ? 10 : 22 }, { y: compact ? -10 : -22, ease: 'none', scrollTrigger: { trigger: art, start: 'top bottom', end: 'bottom top', scrub: true } });
   });
-  document.querySelectorAll('.section-top,.steps article').forEach(section => {
+  document.querySelectorAll('.section-top').forEach(section => {
     const line = document.createElement('span');
     line.className = 'section-draw'; line.setAttribute('aria-hidden', 'true'); section.append(line);
     gsap.fromTo(line, { scaleX: 0 }, { scaleX: 1, duration: .8, ease: 'power2.out', scrollTrigger: { trigger: section, start: 'top 92%', once: true } });
     releases.push(() => line.remove());
   });
+  if (document.querySelector('.steps')) releases.push(setupProcessSequence({gsap, ScrollTrigger, play}));
   const lens = document.querySelector('.review-optic-lens');
   if (lens) gsap.fromTo(lens, { rotation: -28 }, { rotation: 28, ease: 'none', scrollTrigger: { trigger: '#reviews', start: 'top bottom', end: 'bottom top', scrub: true } });
 
