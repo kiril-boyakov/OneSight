@@ -6,7 +6,8 @@
   "packageManager": "pnpm@11.25.0",
   "scripts": {
     "test": "node --test tests/*.test.cjs",
-    "build:animations": "node scripts/prepare-animations.cjs"
+    "build:animations": "node scripts/prepare-animations.cjs",
+    "build:styles": "node scripts/prepare-styles.cjs"
   },
   "dependencies": {
     "gsap": "^3.15.0",

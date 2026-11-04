@@ -1,9 +1,10 @@
 // Run after editing CSS. Content hashes keep deployments and browser caches in sync.
 const fs = require('node:fs');
 const crypto = require('node:crypto');
+const {transformSync} = require('esbuild');
 for (const page of ['dist/index.html','dist/work/index.html']) {
-  const files = ['style','motion','portfolio','refined',...(page==='dist/index.html'?['reviews','carousel']:[])];
-  const css = files.map(name=>fs.readFileSync(`dist/${name}.css`,'utf8')).join('\n');
+  const files = ['style','motion','portfolio','refined',...(page==='dist/index.html'?['reviews','carousel']:[]),'editorial'];
+  const css = transformSync(files.map(name=>fs.readFileSync(`dist/${name}.css`,'utf8')).join('\n'), {loader:'css',minify:true,target:['safari15','chrome100','firefox100']}).code;
   const hash = crypto.createHash('sha256').update(css).digest('hex').slice(0,12);
   const bundle = `${page==='dist/index.html'?'site':'work'}-${hash}.css`;
   fs.writeFileSync(`dist/${bundle}`,css);

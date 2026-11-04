@@ -12,13 +12,13 @@ body{overflow-x:clip}header{height:96px;padding-inline:5%;position:relative;z-in
 .osti-project{padding-top:70px}.osti-thumb{background:#eae4d6;color:#43482e;isolation:isolate}.osti-thumb>span:first-child{font-family:Georgia,serif;font-weight:400;font-size:clamp(100px,12vw,175px);letter-spacing:-12px;transform:translateY(-8px)}.osti-period{color:#737949}.osti-arch{position:absolute;width:66%;height:83%;bottom:-10%;border:1px solid #73794975;border-radius:50% 50% 0 0;transform:rotate(9deg);z-index:-1}.osti-thumb::after{content:'';position:absolute;inset:22px;border:1px solid #73794940;pointer-events:none}.osti-thumb small{letter-spacing:1.8px;z-index:1}.osti-tags{max-width:none}.osti-tags span{color:#5e5d55;border-color:var(--line)}@media(max-width:580px){.osti-project{padding-top:45px}.osti-thumb>span:first-child{font-size:125px;letter-spacing:-9px}}
 .osti-website{margin:0 0 24px}.project-detail{min-width:0}.project-detail h2{overflow-wrap:break-word}
 /* One shared transition language: ruled reveals and expanding stage edges. */
-.cinema-reveal{opacity:1;transform:translate3d(0,25px,0);clip-path:inset(0 0 100% 0);transition:clip-path 1.05s cubic-bezier(.22,1,.36,1) var(--delay,0ms),transform 1.05s cubic-bezier(.22,1,.36,1) var(--delay,0ms)}
-.cinema-reveal.is-visible,.cinema-reveal:focus-within{clip-path:inset(-10% -3% -10% -3%);transform:none}.cinema .hero h1{opacity:1;transform:translate3d(0,calc(var(--hero-progress,0)*20px),0)}.cinema .hero-star{transform:translate3d(0,calc(var(--hero-progress,0)*-75px),0) rotate(calc(5deg - var(--hero-progress,0)*12deg))}.cinema .services::before,.cinema .about::before,.cinema .inquiry::before{clip-path:inset(0 calc((1 - var(--entrance,1))*3%) round 0)}.cinema .about::before{background:#e9e5dc}.cinema .work-art{clip-path:inset(0 calc((1 - var(--entrance,1))*4%) round 0)}
+
+
 @media(min-width:1000px){.process>.section-label{position:sticky;top:50px;align-self:start}.about-copy{padding:10px 0}.inquiry-intro{position:sticky;top:45px;align-self:start}}
 @media(max-width:850px){.section{padding:80px 6%}.hero{min-height:0}.hero h1{font-size:9.4vw;margin-top:50px}.hero-star.focus-mark{width:19vw;height:25vw;right:0}.intro{grid-template-columns:1fr;gap:32px}.intro>div:last-child{padding-left:0}.services,.about,.inquiry{padding-inline:calc(6% - 12px);margin-inline:12px}.work-art{height:430px}.work-caption{grid-template-columns:1fr 1fr}.work-caption>a{grid-column:2}.process,.faq{grid-template-columns:1fr 2fr}.about{gap:6%}.about-art{aspect-ratio:.8}.inquiry{gap:5%}#project-form{padding:22px}.footer-top .logo{font-size:40px}.portfolio-cta{margin-inline:12px}.project-thumb{min-height:350px}}
-@media(max-width:580px){header{height:80px}.hero{padding:28px 6% 0}.hero h1{font-size:12.5vw;margin:44px 0 22px;line-height:1.04}.hero-star.focus-mark{width:24vw;height:31vw;right:2%;bottom:0;box-shadow:7px 8px 0 #dedbd2}.hero-bottom{padding-bottom:35px}.hero-bottom p{font-size:13px}.hero-line{font-size:7px;letter-spacing:1px;padding-block:19px}.hero-star.focus-mark b{box-shadow:none}.section{padding:62px 6%}.services,.about,.inquiry{padding-inline:calc(6% - 10px);margin-inline:10px}.service-list h3{font-size:28px;letter-spacing:-1.2px}.service-list summary{padding:27px 0}.service-body{padding-bottom:25px}.services .section-top{margin-bottom:35px}.work-art{height:340px;padding:36px 7%}.work-word{font-size:18vw}.work-art::before{inset:10% 6%;transform:rotate(-4deg)}.work-caption{display:block}.work-caption h2{font-size:26px}.work-caption .text-link{margin-top:17px}.process,.faq{display:block}.process>h2,.faq>h2{margin-top:30px}.steps{gap:35px 22px;margin-top:40px}.steps h3{font-size:21px;margin-top:25px}.steps p{font-size:12px}.about{display:grid;grid-template-columns:1fr;gap:38px}.about-art{aspect-ratio:1.15}.about-art>span{font-size:340px}.about-copy h2{font-size:45px}.reviews-grid{grid-template-columns:1fr;gap:35px}.review-empty{padding-left:24px}.reviews-grid h2{font-size:43px}.faq summary{font-size:16px}.inquiry{display:block}.inquiry h2{font-size:70px}.inquiry-intro>p{margin-bottom:35px}.inquiry-star.focus-mark{display:none}#project-form{padding:22px 15px}.form-row{gap:16px}footer{padding-top:50px}.footer-top{padding-bottom:40px}.project-thumb{min-height:320px}.project-detail h2{font-size:48px}.portfolio-hero h1{font-size:53px}.portfolio-cta{margin-inline:10px}.cinema-reveal{transform:translate3d(0,16px,0)}.cinema .hero h1{transform:none}.cinema .hero-star{transform:rotate(5deg)}}
+@media(max-width:580px){header{height:80px}.hero{padding:28px 6% 0}.hero h1{font-size:12.5vw;margin:44px 0 22px;line-height:1.04}.hero-star.focus-mark{width:24vw;height:31vw;right:2%;bottom:0;box-shadow:7px 8px 0 #dedbd2}.hero-bottom{padding-bottom:35px}.hero-bottom p{font-size:13px}.hero-line{font-size:7px;letter-spacing:1px;padding-block:19px}.hero-star.focus-mark b{box-shadow:none}.section{padding:62px 6%}.services,.about,.inquiry{padding-inline:calc(6% - 10px);margin-inline:10px}.service-list h3{font-size:28px;letter-spacing:-1.2px}.service-list summary{padding:27px 0}.service-body{padding-bottom:25px}.services .section-top{margin-bottom:35px}.work-art{height:340px;padding:36px 7%}.work-word{font-size:18vw}.work-art::before{inset:10% 6%;transform:rotate(-4deg)}.work-caption{display:block}.work-caption h2{font-size:26px}.work-caption .text-link{margin-top:17px}.process,.faq{display:block}.process>h2,.faq>h2{margin-top:30px}.steps{gap:35px 22px;margin-top:40px}.steps h3{font-size:21px;margin-top:25px}.steps p{font-size:12px}.about{display:grid;grid-template-columns:1fr;gap:38px}.about-art{aspect-ratio:1.15}.about-art>span{font-size:340px}.about-copy h2{font-size:45px}.reviews-grid{grid-template-columns:1fr;gap:35px}.review-empty{padding-left:24px}.reviews-grid h2{font-size:43px}.faq summary{font-size:16px}.inquiry{display:block}.inquiry h2{font-size:70px}.inquiry-intro>p{margin-bottom:35px}.inquiry-star.focus-mark{display:none}#project-form{padding:22px 15px}.form-row{gap:16px}footer{padding-top:50px}.footer-top{padding-bottom:40px}.project-thumb{min-height:320px}.project-detail h2{font-size:48px}.portfolio-hero h1{font-size:53px}.portfolio-cta{margin-inline:10px}}
 @media(max-width:580px){.hero h1{font-size:11.5vw}.hero-star.focus-mark{width:52px;height:65px;bottom:-20px;right:4%}.vertical-note{display:none}}
-@media(prefers-reduced-motion:reduce){.cinema-reveal{clip-path:none;transform:none}.hero-star.focus-mark{transform:rotate(5deg)}.work-art::before,.thumb-frame{transition:none}}
+@media(prefers-reduced-motion:reduce){.hero-star.focus-mark{transform:rotate(5deg)}.work-art::before,.thumb-frame{transition:none}}
 .osti-thumb .osti-logo{display:block;width:70%;max-width:350px;height:auto;object-fit:contain;margin:35px 0 65px}.osti-thumb::after{display:none}
 /* Form focus follows the underline instead of drawing a white box. */
 .inquiry input:not([type="radio"]):not([type="checkbox"]),.inquiry textarea,.inquiry select{border-radius:0;transition:border-color .18s ease,box-shadow .18s ease,background-color .18s ease}
@@ -92,12 +92,12 @@ body{overflow-x:clip}header{height:96px;padding-inline:5%;position:relative;z-in
  .osti-thumb .osti-logo{max-width:240px;width:67%;margin:24px 0 48px}.project-detail h2{font-size:42px;margin:18px 0}.project-detail dl{font-size:14px;line-height:1.75}
  .osti-project{padding-top:40px}.project-next{padding-top:36px}.project-next h2{font-size:34px}.project-next p{font-size:15px}
  .portfolio-cta{margin-inline:8px}.portfolio-cta h2{font-size:clamp(32px,9.5vw,48px)}.portfolio-cta .button{min-height:52px;font-size:14px}
- .cinema-reveal{opacity:.35;clip-path:inset(0 0 8% 0);transform:translate3d(0,18px,0);transition:opacity .7s ease var(--delay,0ms),clip-path .85s cubic-bezier(.22,1,.36,1) var(--delay,0ms),transform .85s cubic-bezier(.22,1,.36,1) var(--delay,0ms)}
- .cinema-reveal.is-visible,.cinema-reveal:focus-within{opacity:1;clip-path:inset(-12px -6px -12px -6px);transform:none}
- .cinema .hero h1{transform:none;opacity:1}.cinema .hero-star{transform:translate3d(0,calc(var(--hero-progress,0)*-14px),0) rotate(calc(5deg + var(--hero-progress,0)*8deg))}
- .cinema .services::before,.cinema .about::before,.cinema .inquiry::before{clip-path:inset(0 calc((1 - var(--entrance,1))*2%) round calc((1 - var(--entrance,1))*18px))}
- .cinema .work-art{clip-path:inset(0 calc((1 - var(--entrance,1))*2%) round calc((1 - var(--entrance,1))*16px))}
- .cinema .work-art .frame{transform:translate3d(0,calc(var(--drift,0px)*.35),0) scale(calc(.98 + var(--entrance,1)*.02))}
+ 
+ 
+ 
+ 
+ 
+ 
  .work-art .target.focus-mark{width:110px;height:110px;right:-7%;top:12%;opacity:.28}
  dialog{max-width:calc(100vw - 32px);padding:24px}
 }
@@ -105,13 +105,13 @@ body{overflow-x:clip}header{height:96px;padding-inline:5%;position:relative;z-in
 .ui-arrow{display:inline-block;width:1.1em;height:1.1em;vertical-align:-.15em;flex:0 0 auto;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .button .ui-arrow{width:24px;height:24px}.text-link>.ui-arrow{width:19px;height:19px}.button>span{display:inline-flex;align-items:center}.contact-placeholders .ui-arrow{width:12px;height:12px}
 @media(max-width:650px){header .button .ui-arrow{width:20px;height:20px}}
-@media(prefers-reduced-motion:reduce){.cinema-reveal,.cinema-reveal.is-visible,.cinema-reveal:focus-within{opacity:1;clip-path:none;transform:none}.cinema .hero-star{transform:rotate(5deg)}.cinema .work-art .frame{transform:none}.cinema .services::before,.cinema .about::before,.cinema .inquiry::before,.cinema .work-art{clip-path:none}}
+@media(prefers-reduced-motion:reduce){}
 
 /* Content is always readable, even if a browser misses an intersection callback. */
-.cinema-reveal,.cinema-reveal.is-visible,.cinema-reveal:focus-within{opacity:1;clip-path:none;transform:none;transition:none}
+
 @media(prefers-reduced-motion:no-preference){
- .cinema-reveal.is-visible{animation:onesight-enter .75s cubic-bezier(.22,1,.36,1) both;animation-delay:0ms}
- @keyframes onesight-enter{from{opacity:1;transform:translate3d(0,18px,0)}to{opacity:1;transform:none}}
+ 
+ 
 }
 
 .muted{color:#6b6a64}.steps article>span,.hero-line span:last-child{color:#ba251c}
@@ -139,3 +139,5 @@ body{overflow-x:clip}header{height:96px;padding-inline:5%;position:relative;z-in
 
 .reading-progress{position:fixed;top:0;left:0;width:100%;height:2px;background:var(--red);transform-origin:left;z-index:20;pointer-events:none}
 @media(max-width:380px){header .logo{font-size:26px}header>.button{font-size:11px;padding:10px;gap:8px}}
+
+.cinema-reveal,.cinema-reveal.is-visible,.cinema-reveal:focus-within{opacity:1;clip-path:none;transform:none;transition:none}

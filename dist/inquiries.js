@@ -3,10 +3,16 @@
  if(!form)return;
  const fields=document.getElementById('inquiry-fields'),status=document.getElementById('form-status'),note=document.getElementById('inquiry-availability');
  let requestId=null;
+ function checkAvailability(){
  fetch('/api/inquiries?ready=1').then(async response=>{
   const result=await response.json();if(!response.ok||!result.ready)throw Error();
   fields.disabled=false;note.textContent='Your inquiry is sent privately to OneSight. We’ll use your details to discuss your project.';status.textContent='';
- }).catch(()=>{note.textContent='The inquiry form is not connected yet. Please use WhatsApp below to discuss your project.';});
+ }).catch(()=>{note.textContent='The inquiry form is temporarily unavailable. Please use WhatsApp below to discuss your project.';});
+ }
+ if(typeof IntersectionObserver==='function'){
+  const availability=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting)){availability.disconnect();checkAvailability();}},{rootMargin:'600px 0px'});
+  availability.observe(form);
+ }else checkAvailability();
  form.addEventListener('submit',async event=>{
   event.preventDefault();if(!form.reportValidity()||fields.disabled)return;
   const data=new FormData(form);

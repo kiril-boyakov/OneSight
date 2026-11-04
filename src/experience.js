@@ -32,12 +32,12 @@ media.add({ compact: '(max-width:650px)', wide: '(min-width:651px)', motion: '(p
   gsap.fromTo(progress, { scaleX: 0 }, { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: true } });
   releases.push(() => progress.remove());
   const hero = document.querySelector('.hero');
+  const optic = hero?.querySelector('.optic-shell');
   const heroMark = hero?.querySelector('.focus-mark');
-  if (heroMark) {
-    gsap.to(heroMark, { y: compact ? -18 : -55, rotation: compact ? -3 : -8, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
-  }
+  if (optic) gsap.to(optic, { rotation: compact ? 32 : 65, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
+  if (heroMark) gsap.fromTo(heroMark, { scale: .92 }, { scale: 1, duration: .7, ease: 'power2.out' });
   document.querySelectorAll('.about-art,.project-thumb').forEach(art => {
-    const subject = art.querySelector('.orbit,.thumb-frame,.osti-logo,.krainis-logo');
+    const subject = art.querySelector('.orbit,.thumb-frame,.osti-logo,.krainis-logo,.krainis-thumb img');
     if (!subject) return;
     gsap.fromTo(subject, { y: compact ? 10 : 22 }, { y: compact ? -10 : -22, ease: 'none', scrollTrigger: { trigger: art, start: 'top bottom', end: 'bottom top', scrub: true } });
   });
@@ -72,12 +72,14 @@ media.add({ compact: '(max-width:650px)', wide: '(min-width:651px)', motion: '(p
   document.querySelectorAll('#approved-reviews .review-card').forEach(card => entrance.observe(card));
   releases.push(() => document.removeEventListener('onesight:reviews', reviewEntrance));
   const refresh = () => ScrollTrigger.refresh();
-  document.fonts?.ready.then(refresh);
+  let disposed = false;
+  document.fonts?.ready.then(() => { if (!disposed) refresh(); });
   document.querySelectorAll('main details').forEach(details => {
     details.addEventListener('toggle', refresh);
     releases.push(() => details.removeEventListener('toggle', refresh));
   });
   return () => {
+    disposed = true;
     releases.forEach(release => release());
     active.forEach(animation => animation.stop());
     active.clear();

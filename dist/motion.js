@@ -4,6 +4,7 @@
     mark.classList.add('focus-mark'); mark.innerHTML = focusMark;
   });
   document.querySelectorAll('.logo').forEach(logo => {
+    if (logo.querySelector('.brand-focus')) return;
     const mark = document.createElement('span');
     mark.className = 'brand-focus'; mark.setAttribute('aria-hidden', 'true');
     mark.innerHTML = '<i></i><b></b>';
@@ -14,7 +15,7 @@
   function load() {
     if (loaded || reduced.matches) return;
     loaded = true;
-    import('/experience-9c07516ba96d.js').catch(() => { loaded = false; });
+    import('/experience-d1e8d3f391b1.js').catch(() => { loaded = false; });
   }
   const defer = () => 'requestIdleCallback' in window ? requestIdleCallback(load, { timeout: 1600 }) : setTimeout(load, 300);
   if (document.readyState === 'complete') defer();

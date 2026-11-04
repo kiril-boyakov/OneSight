@@ -18,6 +18,14 @@ async function loadReviews() {
         const label = document.createElement('span'); label.textContent = `${String(index + 1).padStart(2, '0')} / CLIENT PERSPECTIVE`;
         const mark = document.createElement('span'); mark.className = 'review-quote-mark'; mark.setAttribute('aria-hidden', 'true'); mark.textContent = '“';
         top.append(label, mark);
+        const logos = {'krainis digital':'/assets/krainis-digital-logo.svg', 'osti':'/assets/osti-logo.webp'};
+        const logoSource = logos[(review.business || '').trim().toLowerCase()];
+        if (logoSource) {
+          top.classList.add('has-client-logo');
+          const logo = document.createElement('img'); logo.className = 'review-client-logo'; logo.src = logoSource;
+          logo.alt = review.business; logo.width = 90; logo.height = 34; logo.loading = 'lazy'; logo.decoding = 'async';
+          top.append(logo);
+        }
         const quote = document.createElement('blockquote'); quote.textContent = review.review;
         const footer = document.createElement('div'); footer.className = 'review-card-footer';
         const avatar = document.createElement('span'); avatar.className = 'review-avatar'; avatar.setAttribute('aria-hidden', 'true');
@@ -70,7 +78,13 @@ document.querySelector('[data-open-review]')?.addEventListener('click', event =>
   entry.querySelector('summary').focus({preventScroll:true});
   entry.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start'});
 });
-loadReviews();
+if (typeof IntersectionObserver === 'function') {
+  const availability = new IntersectionObserver(entries => {
+    if (!entries.some(entry => entry.isIntersecting)) return;
+    availability.disconnect(); loadReviews();
+  }, {rootMargin:'600px 0px'});
+  availability.observe(document.getElementById('reviews'));
+} else loadReviews();
 
 function setupReviewNavigation() {
   const cards = [...reviewList.children];
