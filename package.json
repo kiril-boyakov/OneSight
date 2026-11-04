@@ -5,10 +5,14 @@
   "description": "OneSight static website",
   "packageManager": "pnpm@11.25.0",
   "scripts": {
-    "test": "node --test tests/*.test.cjs"
+    "test": "node --test tests/*.test.cjs",
+    "build:animations": "node scripts/prepare-animations.cjs"
   },
   "dependencies": {
     "gsap": "^3.15.0",
     "motion": "^14.9.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }

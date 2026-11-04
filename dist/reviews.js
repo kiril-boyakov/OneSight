@@ -28,10 +28,25 @@ async function loadReviews() {
         if (review.business) { const business = document.createElement('p'); business.className = 'review-business'; business.textContent = review.business; identity.append(business); }
         footer.append(avatar, identity);
         card.append(top, quote, footer);
+        if (review.review.length > 330) {
+          quote.id = `client-review-${index}`;
+          quote.classList.add('review-truncated');
+          const expand = document.createElement('button'); expand.type = 'button'; expand.className = 'review-expand';
+          expand.textContent = 'Read full review'; expand.setAttribute('aria-expanded', 'false'); expand.setAttribute('aria-controls', quote.id);
+          expand.addEventListener('click', () => {
+            const collapsed = quote.classList.toggle('review-truncated');
+            expand.textContent = collapsed ? 'Read full review' : 'Show less';
+            expand.setAttribute('aria-expanded', String(!collapsed));
+            document.dispatchEvent(new CustomEvent('onesight:reviews', {detail: []}));
+          });
+          card.insertBefore(expand, footer);
+        }
         reviewList.append(card);
       }
+      setupReviewNavigation();
+      document.dispatchEvent(new CustomEvent('onesight:reviews', {detail: [...reviewList.children]}));
     }
-  } catch { reviewStatus.textContent = 'Review submissions are not available yet. Please check back soon.'; }
+  } catch { reviewStatus.textContent = 'Unable to load reviews right now. Please try again shortly.'; }
 }
 reviewForm.addEventListener('submit', async event => {
   event.preventDefault();
@@ -56,3 +71,29 @@ document.querySelector('[data-open-review]')?.addEventListener('click', event =>
   entry.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start'});
 });
 loadReviews();
+
+function setupReviewNavigation() {
+  const cards = [...reviewList.children];
+  if (cards.length < 2) return;
+  const navigation = document.createElement('div'); navigation.className = 'review-navigation';
+  const position = document.createElement('span'); position.className = 'review-position'; position.setAttribute('aria-live', 'polite');
+  const previous = document.createElement('button'), next = document.createElement('button');
+  const arrow = direction => `<svg class="ui-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="${direction < 0 ? 'M20 12H4m6-6-6 6 6 6' : 'M4 12h16m-6-6 6 6-6 6'}"/></svg>`;
+  previous.type = next.type = 'button';
+  previous.setAttribute('aria-label', 'Previous review'); next.setAttribute('aria-label', 'Next review');
+  previous.innerHTML = arrow(-1); next.innerHTML = arrow(1);
+  let current = 0, frame = 0;
+  const update = () => {
+    frame = 0;
+    current = Math.max(0, Math.min(cards.length - 1, Math.round(reviewList.scrollLeft / (cards[0].offsetWidth + 16))));
+    position.textContent = `${String(current + 1).padStart(2, '0')} / ${String(cards.length).padStart(2, '0')}`;
+    previous.disabled = current === 0; next.disabled = current === cards.length - 1;
+  };
+  const go = direction => {
+    const index = Math.max(0, Math.min(cards.length - 1, current + direction));
+    reviewList.scrollTo({left: index * (cards[0].offsetWidth + 16), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  };
+  previous.addEventListener('click', () => go(-1)); next.addEventListener('click', () => go(1));
+  reviewList.addEventListener('scroll', () => {if (!frame) frame = requestAnimationFrame(update);}, {passive:true});
+  navigation.append(position, previous, next); reviewList.after(navigation); update();
+}
