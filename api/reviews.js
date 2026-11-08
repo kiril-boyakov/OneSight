@@ -1,3 +1,4 @@
+const isAdmin = require('./_admin');
 const { createHmac } = require('node:crypto');
 
 module.exports = async function handler(req, res) {
@@ -24,7 +25,7 @@ module.exports = async function handler(req, res) {
       const response = await fetch(`${url}/auth/v1/user`, { headers: { apikey: anon, Authorization: auth }, signal: AbortSignal.timeout(8000) });
       if (!response.ok) return reply(401, { error: 'Your session expired. Please sign in again.' });
       const user = await response.json();
-      if (user.id !== admin) return reply(403, { error: 'This account cannot manage reviews.' });
+      if (!isAdmin(user, admin)) return reply(403, { error: 'This account cannot manage reviews.' });
     }
     if (req.method === 'GET') {
       if (moderation) {
@@ -47,8 +48,9 @@ module.exports = async function handler(req, res) {
     if (!body || typeof body !== 'object') return reply(400, { error: 'Please check your review.' });
     if (req.method === 'PATCH') {
       if (!/^[0-9a-f-]{36}$/i.test(body.id || '') || !['approved', 'rejected', 'pending'].includes(body.status)) return reply(400, { error: 'Invalid review update.' });
-      const rows = await db(`reviews?id=eq.${body.id}&select=id,status`, { method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ status: body.status }) });
-      if (!rows.length) return reply(404, { error: 'Review not found.' });
+      if (body.previousStatus !== undefined && !['approved','rejected','pending'].includes(body.previousStatus)) return reply(400,{error:'Invalid previous status.'});
+      const rows = await db(`reviews?id=eq.${body.id}${body.previousStatus ? '&status=eq.'+body.previousStatus : ''}&select=id,status`, { method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ status: body.status }) });
+      if (!rows.length) return reply(409, { error: 'This review changed or was removed. Refresh before trying again.' });
       return reply(200, { review: rows[0] });
     }
     const clean = value => typeof value === 'string' ? value.trim() : '';

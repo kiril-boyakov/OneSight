@@ -26,7 +26,7 @@ async function refreshReviews() {
         const button = document.createElement('button'); button.type = 'button'; button.className = 'button'; button.textContent = label;
         button.addEventListener('click', async () => {
           actions.querySelectorAll('button').forEach(b => b.disabled = true);
-          try { await api('/api/reviews', { method: 'PATCH', body: JSON.stringify({ id: review.id, status: value }) }); await refresh(); }
+          try { await api('/api/reviews', { method: 'PATCH', body: JSON.stringify({ id: review.id, status: value, previousStatus: review.status }) }); await refresh(); }
           catch (error) { status.textContent = error.message; actions.querySelectorAll('button').forEach(b => b.disabled = false); }
         });
         actions.append(button);
@@ -42,7 +42,7 @@ login.addEventListener('submit', async event => {
     const result = await response.json(); if (!response.ok) throw new Error('Sign in failed. Check your credentials.');
     token = result.access_token;
     await api('/api/reviews?moderation=1');
-    login.reset(); login.hidden = true; panel.hidden = false; await refresh();
+    document.getElementById('team-identity').textContent = 'Signed in as ' + result.user.email; login.reset(); login.hidden = true; panel.hidden = false; await refresh();
   } catch (error) { token = null; status.textContent = error.message; }
   finally { document.getElementById('login-fields').disabled = false; }
 });
@@ -54,7 +54,7 @@ document.getElementById('logout').addEventListener('click', async () => {
   try { await fetch(config.url + '/auth/v1/logout', { method: 'POST', headers: { apikey: config.anon, Authorization: `Bearer ${current}` } }); } catch {}
 });
 fetch('/api/reviews?config=1').then(async response => {
-  if (!response.ok) throw new Error(); config = await response.json(); document.getElementById('login-fields').disabled = false; status.textContent = 'Sign in with your configured owner account. Sessions stay in memory and end when this page is reloaded.';
+  if (!response.ok) throw new Error(); config = await response.json(); document.getElementById('login-fields').disabled = false; status.textContent = 'Sign in with your team account. Sessions stay in memory and end when this page is reloaded.';
 }).catch(() => { status.textContent = 'Review management is not connected yet.'; });
 
 async function refresh(){
@@ -83,7 +83,7 @@ async function refresh(){
    }
    for(const [value,label]of [['new','Mark new'],['contacted','Mark contacted'],['archived','Archive']]){
     if(value===inquiry.status)continue;
-    const button=document.createElement('button');button.type='button';button.className='button';button.textContent=label;button.addEventListener('click',()=>act('/api/inquiries',{id:inquiry.id,status:value}));actions.append(button);
+    const button=document.createElement('button');button.type='button';button.className='button';button.textContent=label;button.addEventListener('click',()=>act('/api/inquiries',{id:inquiry.id,status:value,previousStatus:inquiry.status}));actions.append(button);
    }
    if(inquiry.notification_status!=='sent'&&result.notificationsConfigured){
     const retry=document.createElement('button');retry.type='button';retry.className='button';retry.textContent='Retry email alert';retry.addEventListener('click',()=>act('/api/inquiries?notify=1',{id:inquiry.id}));actions.append(retry);
@@ -92,3 +92,9 @@ async function refresh(){
   }
  }catch(error){status.textContent='Inquiries are not connected yet, or could not be loaded. '+error.message;}
 }
+
+const search=document.getElementById('admin-search');
+function filterCards(){const term=search.value.trim().toLowerCase();for(const card of list.children)card.hidden=!card.textContent.toLowerCase().includes(term);}
+search.addEventListener('input',filterCards);
+new MutationObserver(filterCards).observe(list,{childList:true});
+document.getElementById('refresh-inbox').addEventListener('click',refresh);

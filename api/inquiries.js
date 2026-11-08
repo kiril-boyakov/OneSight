@@ -1,3 +1,4 @@
+const isAdmin = require('./_admin');
 const {createHmac}=require('node:crypto');
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 module.exports=async function(req,res){
@@ -36,7 +37,7 @@ module.exports=async function(req,res){
    const authorization=req.headers.authorization||'';if(!authorization.startsWith('Bearer '))return reply(401,{error:'Please sign in.'});
    const r=await fetch(`${url}/auth/v1/user`,{headers:{apikey:anon,Authorization:authorization},signal:AbortSignal.timeout(8000)});
    if(!r.ok)return reply(401,{error:'Your session expired. Please sign in again.'});
-   if((await r.json()).id!==admin)return reply(403,{error:'This account cannot manage inquiries.'});
+   if(!isAdmin(await r.json(),admin))return reply(403,{error:'This account cannot manage inquiries.'});
   }
   if(req.method==='GET'){
    const status=query.get('status')||'new';if(!['new','contacted','archived'].includes(status))return reply(400,{error:'Invalid inquiry status.'});
@@ -54,8 +55,9 @@ module.exports=async function(req,res){
     return reply(200,{notificationStatus:await notify(body.id,rows[0].notification_status)});
    }
    if(!['new','contacted','archived'].includes(body.status))return reply(400,{error:'Invalid inquiry status.'});
-   const rows=await db(`inquiries?id=eq.${body.id}&select=id,status`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({status:body.status})});
-   return rows.length?reply(200,{inquiry:rows[0]}):reply(404,{error:'Inquiry not found.'});
+   if(body.previousStatus!==undefined&&!['new','contacted','archived'].includes(body.previousStatus))return reply(400,{error:'Invalid previous status.'});
+   const rows=await db(`inquiries?id=eq.${body.id}${body.previousStatus?'&status=eq.'+body.previousStatus:''}&select=id,status`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({status:body.status})});
+   return rows.length?reply(200,{inquiry:rows[0]}):reply(409,{error:'This inquiry changed or was removed. Refresh before trying again.'});
   }
   const clean=v=>typeof v==='string'?v.trim():'';
   const name=clean(body.name),email=clean(body.email).toLowerCase(),business=clean(body.business),description=clean(body.description),timeline=clean(body.timeline),projectType=clean(body.projectType);
