@@ -51,6 +51,14 @@
 @media(max-width:650px) and (prefers-reduced-motion:no-preference){
  .studio-sticky{min-height:0}
 }
+</style><style>
+@media(max-width:650px) and (prefers-reduced-motion:no-preference){
+ .studio-room,.studio-title,.studio-browser,.studio-boot,.studio-shade,.studio-bridge{transition:none}
+ .studio-visible .studio-room{will-change:transform}
+ .studio-visible .studio-title,.studio-visible .studio-boot,.studio-visible .studio-browser{will-change:opacity}
+ .studio-boot .lamp-wordmark span{animation:none;text-shadow:none}
+ .studio-deck,.studio-render{mask-image:none;-webkit-mask-image:none}
+}
 </style></head><body>
 <div class="draft-bar"><span><i></i> ONESIGHT / STUDIO STUDY 07</span><div role="tablist" aria-label="Draft pages"><button role="tab" id="tab-home" aria-controls="home" aria-selected="true" data-view="home">Homepage</button><button role="tab" id="tab-work" aria-controls="work" aria-selected="false" data-view="work">Portfolio</button></div><span class="draft-only">PRIVATE DRAFT · LIVE SITE UNCHANGED</span></div>
 <a class="skip" href="#main">Skip to content</a>
