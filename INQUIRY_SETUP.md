@@ -17,12 +17,12 @@ Create a Resend account if needed, then add and verify a sending domain/subdomai
 Create a restricted sending API key for that domain, then set these **server-only Production variables in Vercel**:
 
 - `RESEND_API_KEY`: your Resend sending key.
-- `INQUIRY_NOTIFY_TO`: your private recipient email address. It is never returned to visitors or put in the frontend.
+- `INQUIRY_NOTIFY_TO`: the private recipient list for new inquiries and pending reviews (comma-separated email addresses). It is never returned to visitors or put in the frontend.
 - `INQUIRY_NOTIFY_FROM`: a verified-domain sender, for example `OneSight <inquiries@notifications.1sight.eu>` (only after verifying that domain).
 
 Redeploy in Vercel after adding the variables. A sending address is not a purchased mailbox and does not replace your public WhatsApp contact.
 
-Alerts contain only a dashboard link and inquiry reference. Client names, email addresses, business names and project text are not sent in notification bodies. Resend processes the private recipient address to deliver the alert. Inbox delivery cannot be guaranteed by API acceptance; check spam and the Resend delivery logs during setup.
+Alerts contain a dashboard link and, for inquiries, a reference. Client names, email addresses, business names and project text are not sent in notification bodies. Resend processes the private recipient address to deliver the alert. Inbox delivery cannot be guaranteed by API acceptance; check spam and the Resend delivery logs during setup.
 
 ## 3. Verify before relying on it
 

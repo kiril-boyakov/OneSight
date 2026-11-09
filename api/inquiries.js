@@ -1,12 +1,14 @@
+const { alertConfig, sendAlert } = require('./_notifications');
 const isAdmin = require('./_admin');
 const {createHmac}=require('node:crypto');
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 module.exports=async function(req,res){
  res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');
  const reply=(code,data)=>res.status(code).json(data);
- const {SUPABASE_URL:url,SUPABASE_ANON_KEY:anon,SUPABASE_SERVICE_ROLE_KEY:secret,REVIEW_ADMIN_ID:admin,REVIEW_RATE_SALT:salt,RESEND_API_KEY:mailKey,INQUIRY_NOTIFY_TO:to,INQUIRY_NOTIFY_FROM:from}=process.env;
+ const {SUPABASE_URL:url,SUPABASE_ANON_KEY:anon,SUPABASE_SERVICE_ROLE_KEY:secret,REVIEW_ADMIN_ID:admin,REVIEW_RATE_SALT:salt}=process.env;
  const configured=Boolean(url&&anon&&secret&&admin&&salt);
- const notifications=Boolean(mailKey&&to&&from);
+ const mail=alertConfig();
+ const notifications=Boolean(mail);
  if(!configured)return reply(503,{error:'The inquiry form is not connected yet. Please contact us on WhatsApp.'});
  const db=async(path,options={})=>{
   const r=await fetch(`${url}/rest/v1/${path}`,{...options,headers:{apikey:secret,Authorization:`Bearer ${secret}`,'Content-Type':'application/json',...options.headers},signal:AbortSignal.timeout(8000)});
@@ -18,8 +20,8 @@ module.exports=async function(req,res){
   if(notifications){
    state='failed';
    try{
-    const r=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${mailKey}`,'Content-Type':'application/json','Idempotency-Key':`inquiry-${id}`},body:JSON.stringify({from,to:[to],subject:'New OneSight project inquiry',text:`A new project inquiry is saved in your private OneSight dashboard.\n\nSign in: https://1sight.eu/admin/\nReference: ${id}\n\nClient details are available only in the dashboard.`}),signal:AbortSignal.timeout(8000)});
-    const result=await r.json();if(r.ok&&result.id){state='sent';providerId=result.id;}
+    providerId=await sendAlert(mail,{subject:'New 1sight project inquiry',text:`A new project inquiry is saved in your private 1sight dashboard.\n\nSign in: https://1sight.eu/admin/\nReference: ${id}\n\nClient details are available only in the dashboard.`,key:`inquiry-${id}`});
+    if(providerId)state='sent';
    }catch{}
   }
   // A mail failure must never discard an inquiry that is already safely stored.

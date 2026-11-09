@@ -2,7 +2,7 @@ const { test, afterEach } = require('node:test');
 const assert = require('node:assert/strict');
 const handler = require('../api/reviews.js');
 const originalFetch = global.fetch;
-const names = ['SUPABASE_URL','SUPABASE_ANON_KEY','SUPABASE_SERVICE_ROLE_KEY','REVIEW_ADMIN_ID','REVIEW_RATE_SALT'];
+const names = ['SUPABASE_URL','SUPABASE_ANON_KEY','SUPABASE_SERVICE_ROLE_KEY','REVIEW_ADMIN_ID','REVIEW_RATE_SALT','RESEND_API_KEY','INQUIRY_NOTIFY_TO','INQUIRY_NOTIFY_FROM'];
 const originalEnv = Object.fromEntries(names.map(key => [key, process.env[key]]));
 function configured() {
   Object.assign(process.env, { SUPABASE_URL: 'https://project.invalid', SUPABASE_ANON_KEY: 'public-test', SUPABASE_SERVICE_ROLE_KEY: 'secret-test', REVIEW_ADMIN_ID: 'owner', REVIEW_RATE_SALT: 'test-salt' });
@@ -26,3 +26,26 @@ test('success only follows database insert and never accepts a client approval s
 test('rate-limit exhaustion returns 429 without success',async()=>{configured();global.fetch=async()=>new Response('false');assert.equal((await request('POST','/api/reviews',valid)).code,429);});
 test('database failure never reports success',async()=>{configured();global.fetch=async()=>new Response('{}',{status:500});assert.equal((await request('POST','/api/reviews',valid)).code,503);});
 test('owner can approve and only the status is written',async()=>{configured();let count=0;global.fetch=async(url,options)=>{if(count++===0)return new Response('{"id":"owner"}');assert.deepEqual(JSON.parse(options.body),{status:'approved'});return new Response('[{"id":"11111111-1111-1111-1111-111111111111","status":"approved"}]');};assert.equal((await request('PATCH','/api/reviews',{id:'11111111-1111-1111-1111-111111111111',status:'approved',review:'overwrite attempt'}, {authorization:'Bearer owner-token'})).code,200);});
+
+test('saved reviews send a private alert to all configured recipients', async () => {
+  configured();
+  Object.assign(process.env, {
+    RESEND_API_KEY:'test-key', INQUIRY_NOTIFY_FROM:'alerts@example.invalid',
+    INQUIRY_NOTIFY_TO:'studio@example.invalid, owner@example.invalid, team@example.invalid'
+  });
+  const calls = [];
+  let mail;
+  global.fetch = async (url, options) => {
+    calls.push(url);
+    if (url.includes('/rpc/submit_review')) return new Response('true');
+    mail = JSON.parse(options.body);
+    return new Response('{"id":"mail-test"}');
+  };
+  assert.equal((await request('POST','/api/reviews',valid)).code, 201);
+  assert.deepEqual(mail.to, ['studio@example.invalid', 'owner@example.invalid', 'team@example.invalid']);
+  assert.match(mail.text, /1sight\.eu\/admin/);
+  assert.ok(!mail.text.includes(valid.review));
+  assert.equal(calls.length, 2);
+  assert.match(calls[0], /submit_review$/);
+  assert.equal(calls[1], 'https://api.resend.com/emails');
+});

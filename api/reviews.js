@@ -1,3 +1,4 @@
+const { alertConfig, sendAlert } = require('./_notifications');
 const isAdmin = require('./_admin');
 const { createHmac } = require('node:crypto');
 
@@ -61,6 +62,18 @@ module.exports = async function handler(req, res) {
     const rateHash = createHmac('sha256', salt).update(ip).digest('hex');
     const result = await db('rpc/submit_review', { method: 'POST', body: JSON.stringify({ p_name: name, p_business: business, p_review: review, p_rate_hash: rateHash }) });
     if (!result) return reply(429, { error: 'Too many reviews from this connection. Please try again in an hour.' });
+    const mail = alertConfig();
+    if (mail) {
+      try {
+        const sent = await sendAlert(mail, {
+          subject: 'New 1sight review awaiting moderation',
+          text: 'A new review is waiting for approval in your private 1sight dashboard.\n\nSign in: https://1sight.eu/admin/'
+        });
+        if (!sent) console.warn('Review notification was not accepted');
+      } catch {
+        console.warn('Review notification could not be sent');
+      }
+    }
     return reply(201, { message: 'Thank you. Your review was received and is waiting for approval.' });
   } catch {
     return reply(503, { error: 'We could not complete the request. Please try again later.' });
