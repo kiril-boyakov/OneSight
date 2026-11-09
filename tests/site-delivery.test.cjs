@@ -11,7 +11,8 @@ test('public pages load one local stylesheet, local fonts, and correct productio
   for(const [,asset]of css.matchAll(/url\((\/assets\/[^)]+)\)/g))assert.ok(fs.existsSync('dist'+asset));
   assert.match(html,/<link rel="canonical" href="https:\/\/1sight.eu\//);
   assert.ok(!html.includes('noindex,nofollow'));
-  assert.match(css,/\.cinema-reveal,\.cinema-reveal\.is-visible,\.cinema-reveal:focus-within\{opacity:1;clip-path:none;transform:none;transition:none\}/);
+  if(path==='dist/index.html')assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+  else assert.match(css,/\.cinema-reveal,\.cinema-reveal\.is-visible,\.cinema-reveal:focus-within\{opacity:1;clip-path:none;transform:none;transition:none\}/);
  }
 });
 test('public sitemap and robots allow discovery while excluding admin',()=>{
