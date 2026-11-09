@@ -97,9 +97,9 @@ async function refresh(){
    const context=document.createElement('p');context.textContent=`Project: ${inquiry.project_type}. Timeline: ${inquiry.timeline||'Not specified'}.`;
    const notification=document.createElement('p');notification.textContent='Email alert: '+({sent:'accepted by email provider',failed:'failed — inquiry is safely stored',pending:'pending',not_configured:'not configured'}[inquiry.notification_status]||'unknown');
    const actions=document.createElement('div');actions.className='admin-actions';
-   async function act(path,body){
+   async function act(path,body,method=path.includes('notify')?'POST':'PATCH'){
     actions.querySelectorAll('button').forEach(button=>button.disabled=true);
-    try{const outcome=await api(path,{method:path.includes('notify')?'POST':'PATCH',body:JSON.stringify(body)});await refresh();if(outcome.notificationStatus&&outcome.notificationStatus!=='sent')status.textContent='Inquiry is stored, but the email alert was not accepted. Check email configuration.';}
+    try{const outcome=await api(path,{method,body:JSON.stringify(body)});await refresh();if(outcome.deleted)status.textContent='Inquiry deleted.';if(outcome.notificationStatus&&outcome.notificationStatus!=='sent')status.textContent='Inquiry is stored, but the email alert was not accepted. Check email configuration.';}
     catch(error){status.textContent=error.message;actions.querySelectorAll('button').forEach(button=>button.disabled=false);}
    }
    for(const [value,label]of [['new','Mark new'],['contacted','Mark contacted'],['archived','Archive']]){
@@ -109,6 +109,12 @@ async function refresh(){
    if(inquiry.notification_status!=='sent'&&result.notificationsConfigured){
     const retry=document.createElement('button');retry.type='button';retry.className='button';retry.textContent='Retry email alert';retry.addEventListener('click',()=>act('/api/inquiries?notify=1',{id:inquiry.id}));actions.append(retry);
    }
+   const remove=document.createElement('button');remove.type='button';remove.className='button';remove.textContent='Delete inquiry';
+   remove.addEventListener('click',()=>{
+    if(window.confirm(`Permanently delete the inquiry from ${inquiry.name}? This cannot be undone.`))
+     act('/api/inquiries',{id:inquiry.id},'DELETE');
+   });
+   actions.append(remove);
    card.append(heading,detail,email,description,context,notification,actions);list.append(card);
   }
  }catch(error){status.textContent='Inquiries are not connected yet, or could not be loaded. '+error.message;}

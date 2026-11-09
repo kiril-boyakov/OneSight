@@ -33,8 +33,8 @@ module.exports=async function(req,res){
   if(req.method==='GET'&&query.get('ready')==='1'){
    await db('inquiries?select=id&limit=0');return reply(200,{ready:true});
   }
-  if(!['GET','POST','PATCH'].includes(req.method)){res.setHeader('Allow','GET, POST, PATCH');return reply(405,{error:'Method not allowed.'});}
-  const owner=req.method==='GET'||req.method==='PATCH'||query.get('notify')==='1';
+  if(!['GET','POST','PATCH','DELETE'].includes(req.method)){res.setHeader('Allow','GET, POST, PATCH, DELETE');return reply(405,{error:'Method not allowed.'});}
+  const owner=req.method==='GET'||req.method==='PATCH'||req.method==='DELETE'||query.get('notify')==='1';
   if(owner){
    const authorization=req.headers.authorization||'';if(!authorization.startsWith('Bearer '))return reply(401,{error:'Please sign in.'});
    const r=await fetch(`${url}/auth/v1/user`,{headers:{apikey:anon,Authorization:authorization},signal:AbortSignal.timeout(8000)});
@@ -52,6 +52,10 @@ module.exports=async function(req,res){
   if(!body||typeof body!=='object'||Array.isArray(body))return reply(400,{error:'Please check the form.'});
   if(owner){
    if(!UUID.test(body.id||''))return reply(400,{error:'Invalid inquiry reference.'});
+   if(req.method==='DELETE'){
+    const rows=await db(`inquiries?id=eq.${body.id}&select=id`,{method:'DELETE',headers:{Prefer:'return=representation'}});
+    return rows.length?reply(200,{deleted:true}):reply(404,{error:'Inquiry already removed or not found.'});
+   }
    if(query.get('notify')==='1'){
     const rows=await db(`inquiries?id=eq.${body.id}&select=id,notification_status`);if(!rows.length)return reply(404,{error:'Inquiry not found.'});
     return reply(200,{notificationStatus:await notify(body.id,rows[0].notification_status)});

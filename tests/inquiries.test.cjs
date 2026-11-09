@@ -76,3 +76,21 @@ test('owner inbox is private and status edits cannot overwrite client content',a
  assert.equal((await request('GET',null,'/api/inquiries',{authorization:'Bearer owner'})).code,200);
  assert.equal((await request('PATCH',{id,status:'contacted',description:'overwrite'},'/api/inquiries',{authorization:'Bearer owner'})).code,200);
 });
+
+test('only authorized admins can permanently delete a single inquiry by UUID',async()=>{
+ configure(); let deletes=0;
+ global.fetch=async(url,options)=>{
+  if(url.includes('/auth/'))return Response.json({id:options.headers.Authorization==='Bearer owner'?'owner':'other'});
+  assert.equal(url,'https://project.invalid/rest/v1/inquiries?id=eq.'+id+'&select=id');
+  assert.equal(options.method,'DELETE');
+  assert.equal(options.headers.Prefer,'return=representation');
+  return Response.json(++deletes===1?[{id}]:[]);
+ };
+ const remove=(body,authorization)=>request('DELETE',body,'/api/inquiries',authorization?{authorization}:{});
+ assert.equal((await remove({id})).code,401);
+ assert.equal((await remove({id},'Bearer other')).code,403);
+ assert.equal((await remove({id:'invalid'},'Bearer owner')).code,400);
+ assert.equal(deletes,0);
+ assert.deepEqual((await remove({id},'Bearer owner')).value,{deleted:true});
+ assert.equal((await remove({id},'Bearer owner')).code,404);
+});
