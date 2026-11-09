@@ -114,43 +114,36 @@ document.querySelectorAll('#home>section:not(#studio-sequence)').forEach(el=>rev
 (()=>{const work=document.getElementById('work');document.addEventListener('click',e=>{const a=e.target.closest('[data-studio-case],[data-case-jump]');if(!a)return;const target=document.getElementById(a.hash.slice(1));if(!target)return;e.preventDefault();if(work.hidden)document.getElementById('tab-work').click();requestAnimationFrame(()=>target.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}));});const titles=['Client perspectives','The studio','What we do','How we work','About OneSight','Common questions','Start a project'];const sections=[...document.querySelectorAll('#home>section[data-studio-chapter]')];const cuts=sections.map((section,i)=>{const cut=document.createElement('div');cut.className='chapter-cut';cut.setAttribute('aria-hidden','true');const label=document.createElement('span');label.textContent=titles[i];cut.append(label);section.before(cut);return cut;});})();
 
 (()=> {
-  const front = document.querySelector('#about > .about-art');
-  if (!front || !CSS.supports('transform-style', 'preserve-3d')) return;
+  const art = document.querySelector('#about > .about-art');
+  const stage = art?.querySelector(':scope > span');
+  if (!stage || !CSS.supports('transform-style', 'preserve-3d')) return;
   const style = document.createElement('style');
   style.textContent = `
-    #home .plaque-stage{min-width:0;position:relative;perspective:1100px;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none}
-    #home .plaque-stage.is-dragging{cursor:grabbing}
-    #home .plaque-stage:focus-visible{outline:2px solid #f5a28e;outline-offset:5px}
-    #home .plaque-object{position:relative;transform-style:preserve-3d}
-    #home .plaque-stage .about-art{backface-visibility:hidden;-webkit-backface-visibility:hidden}
-    #home .plaque-stage .plaque-front{transform:translateZ(9px)}
-    #home .plaque-stage .plaque-back{position:absolute;inset:0;height:100%;transform:rotateY(180deg) translateZ(9px);background:#231817}
-    #home .plaque-rim{position:absolute;inset:0;height:100%;width:100%;margin:auto;max-width:none;border-radius:0 48% 0 0;background:#583b36;pointer-events:none}
-    @media(max-width:680px){#home .plaque-rim{max-width:420px}}
-    @media(prefers-reduced-motion:reduce){#home .plaque-stage{scroll-behavior:auto}}
+    #home .about-art>.digit-stage{display:inline-grid;perspective:900px;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+    #home .digit-stage.is-dragging{cursor:grabbing}
+    #home .digit-stage:focus-visible{outline:2px solid #f5a28e;outline-offset:5px}
+    #home .digit-object{display:inline-grid;transform-style:preserve-3d}
+    #home .digit-object>span{grid-area:1/1;pointer-events:none}
   `;
   document.head.append(style);
-  const stage = document.createElement('div');
-  const object = document.createElement('div');
-  const back = front.cloneNode(true);
-  stage.className = 'plaque-stage';
+  art.removeAttribute('aria-hidden');
+  art.querySelector('.orbit')?.setAttribute('aria-hidden','true');
+  stage.classList.add('digit-stage');
   stage.tabIndex = 0;
   stage.setAttribute('role', 'group');
-  stage.setAttribute('aria-label', 'Interactive OneSight plaque. Drag or use arrow keys to rotate. Enter spins; Home resets.');
-  object.className = 'plaque-object';
-  front.classList.add('plaque-front');
-  back.classList.add('plaque-back');
-  front.before(stage);
-  stage.append(object);
-  object.append(front, back);
-  for (let z = -8.5; z <= 8.5; z++) {
-    const rim = document.createElement('div');
-    rim.className = 'plaque-rim';
-    rim.setAttribute('aria-hidden','true');
-    rim.style.transform = 'translateZ(' + z + 'px) scale(' + (Math.abs(z) > 7 ? .994 : 1) + ')';
-    rim.style.background = 'linear-gradient(150deg,#846159,#3f2b29 52%,#684742)';
-    object.append(rim);
+  stage.setAttribute('aria-label', 'Interactive red numeral one. Drag or use arrow keys to rotate. Enter spins; Home resets.');
+  const object = document.createElement('span');
+  object.className = 'digit-object';
+  object.setAttribute('aria-hidden','true');
+  const digit = stage.textContent;
+  for (let z = -7; z <= 0; z++) {
+    const layer = document.createElement('span');
+    layer.textContent = digit;
+    layer.style.transform = 'translateZ(' + z + 'px)';
+    if (z < 0) layer.style.color = z === -7 ? '#cc281e' : '#a5271f';
+    object.append(layer);
   }
+  stage.replaceChildren(object);
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let yaw = 0, pitch = 0, vx = 0, vy = 0, frame = 0, last = 0, pointer = null;
   const clamp = (n, min, max) => Math.max(min, Math.min(max,n));
@@ -206,4 +199,4 @@ document.querySelectorAll('#home>section:not(#studio-sequence)').forEach(el=>rev
   });
   reduced.addEventListener('change',stop);
 })();
-(()=>{const rm=matchMedia('(prefers-reduced-motion: reduce)');const pieces=[...document.querySelectorAll('#home .studio-intro h2,#home .studio-intro p,#home .studio-intro .tags,#home .review-heading,#home .feedback-card,#home .services .section-top,#home .service-list details,#home .process-preview h2,#home .process-lines>div,#home #about > :is(.plaque-stage,.about-art),#home .about-copy h2,#home .about-copy p,#home .faq h2,#home .faq details,#home .inquiry-intro,#home #project-form')];const phone=matchMedia('(max-width:650px)'),visible=new Set(),observer=new IntersectionObserver(entries=>{for(const e of entries){e.target.classList.toggle('piece-onscreen',e.isIntersecting);if(e.isIntersecting)visible.add(e.target);else visible.delete(e.target);}queue()},{rootMargin:'0px'});pieces.forEach(e=>{e.dataset.scrollPiece='';observer.observe(e)});const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t)};let f=0;function draw(){f=0;const h=innerHeight;const current=[...visible];const bounds=current.map(e=>{const r=e.getBoundingClientRect(), y=parseFloat(e.style.getPropertyValue('--piece-offset'))||0;return [r.top-y,r.bottom-y]});current.forEach((e,i)=>{const [top,bottom]=bounds[i];const enter=rm.matches?1:smooth((h*.96-top)/(h*.32));const exit=rm.matches?1:smooth((bottom-h*.04)/(h*.28));e.style.setProperty('--piece-alpha',(.12+.88*Math.min(enter,exit)).toFixed(3));e.style.setProperty('--piece-offset',((1-enter)*24-(1-exit)*28).toFixed(1)+'px')})}function queue(){if(!phone.matches&&!f)f=requestAnimationFrame(draw)}addEventListener('scroll',queue,{passive:true});addEventListener('resize',queue);rm.addEventListener('change',queue);document.addEventListener('click',queue);phone.addEventListener('change',queue);queue()})();
+(()=>{const rm=matchMedia('(prefers-reduced-motion: reduce)');const pieces=[...document.querySelectorAll('#home .studio-intro h2,#home .studio-intro p,#home .studio-intro .tags,#home .review-heading,#home .feedback-card,#home .services .section-top,#home .service-list details,#home .process-preview h2,#home .process-lines>div,#home .about-art,#home .about-copy h2,#home .about-copy p,#home .faq h2,#home .faq details,#home .inquiry-intro,#home #project-form')];const phone=matchMedia('(max-width:650px)'),visible=new Set(),observer=new IntersectionObserver(entries=>{for(const e of entries){e.target.classList.toggle('piece-onscreen',e.isIntersecting);if(e.isIntersecting)visible.add(e.target);else visible.delete(e.target);}queue()},{rootMargin:'0px'});pieces.forEach(e=>{e.dataset.scrollPiece='';observer.observe(e)});const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t)};let f=0;function draw(){f=0;const h=innerHeight;const current=[...visible];const bounds=current.map(e=>{const r=e.getBoundingClientRect(), y=parseFloat(e.style.getPropertyValue('--piece-offset'))||0;return [r.top-y,r.bottom-y]});current.forEach((e,i)=>{const [top,bottom]=bounds[i];const enter=rm.matches?1:smooth((h*.96-top)/(h*.32));const exit=rm.matches?1:smooth((bottom-h*.04)/(h*.28));e.style.setProperty('--piece-alpha',(.12+.88*Math.min(enter,exit)).toFixed(3));e.style.setProperty('--piece-offset',((1-enter)*24-(1-exit)*28).toFixed(1)+'px')})}function queue(){if(!phone.matches&&!f)f=requestAnimationFrame(draw)}addEventListener('scroll',queue,{passive:true});addEventListener('resize',queue);rm.addEventListener('change',queue);document.addEventListener('click',queue);phone.addEventListener('change',queue);queue()})();
