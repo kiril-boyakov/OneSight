@@ -39,6 +39,30 @@
  #home [data-scroll-piece]{opacity:.72;translate:0 9px;transition:opacity 240ms ease-out,translate 240ms ease-out}
  #home [data-scroll-piece].piece-onscreen,#home [data-scroll-piece]:focus-within{opacity:1;translate:none}
 }
+</style><style>
+.mobile-project-dock{display:none}
+@media(max-width:650px){
+ #studio-sequence{height:auto}
+ .studio-sticky{position:relative;top:auto;height:clamp(480px,78svh,700px);min-height:0}
+ .studio-room{width:max(100%,150vw);top:auto;bottom:0;transform:translateX(-50%);will-change:auto}
+ .studio-render{mask-image:none;-webkit-mask-image:none}
+ .studio-title{transform:none;opacity:1;padding-top:clamp(24px,5svh,48px)}
+ .studio-title h1{font-size:clamp(37px,9vw,54px)}
+ .studio-bridge,.studio-shade,.studio-sticky:after{display:none}
+ .studio-boot{display:grid;opacity:1}
+ .studio-boot .lamp-wordmark span{animation:none;text-shadow:none}
+ .mobile-project-dock{display:block;padding:14px 18px 24px;background:#1c100e}
+ .mobile-project-dock .studio-browser{opacity:1;container-type:inline-size;border:1px solid #ffffff29;border-radius:14px;padding:42px 12px 14px;gap:10px;overflow:hidden}
+ .mobile-project-dock .studio-chrome{height:30px;font-size:11px}
+ .mobile-project-dock .studio-chrome i{width:5px;height:5px}
+ .mobile-project-dock .studio-deck{height:auto;aspect-ratio:2.15;perspective:none}
+ .mobile-project-dock .studio-artwork{height:auto;aspect-ratio:1.8}
+ .mobile-project-dock h2{font-size:26px}
+ .mobile-project-dock p{font-size:13px}
+ .mobile-project-dock .studio-controls button,.mobile-project-dock a{font-size:12px;min-height:44px;padding:8px 11px;display:inline-grid;place-items:center;box-sizing:border-box}
+ .mobile-project-dock #studio-play{display:none}
+ #home [data-scroll-piece]{opacity:1;translate:none;transition:none}
+}
 </style></head><body>
 <div class="draft-bar"><span><i></i> ONESIGHT / STUDIO STUDY 07</span><div role="tablist" aria-label="Draft pages"><button role="tab" id="tab-home" aria-controls="home" aria-selected="true" data-view="home">Homepage</button><button role="tab" id="tab-work" aria-controls="work" aria-selected="false" data-view="work">Portfolio</button></div><span class="draft-only">PRIVATE DRAFT · LIVE SITE UNCHANGED</span></div>
 <a class="skip" href="#main">Skip to content</a>
