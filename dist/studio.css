@@ -54,3 +54,7 @@ button .arrow,button .ui-arrow,.contact-link svg,.inquiry .button svg,.review-en
 @media(prefers-reduced-motion:no-preference){#home>section[data-studio-chapter]>:not(.chapter-cut){opacity:1;transform:none}#home [data-scroll-piece]{opacity:var(--piece-alpha,1);translate:0 var(--piece-offset,0px)}#home [data-scroll-piece]:focus-within{opacity:1;translate:none}}
 
 .draft-bar{display:none!important}
+/* Keep the full interactive screen inside narrow portrait viewports. */
+@media (max-width:650px) and (prefers-reduced-motion:no-preference){
+  .studio-room{width:clamp(100%,120svh,270vw)}
+}
