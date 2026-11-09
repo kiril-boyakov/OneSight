@@ -62,3 +62,11 @@ button .arrow,button .ui-arrow,.contact-link svg,.inquiry .button svg,.review-en
 @media (max-width:650px) and (prefers-reduced-motion:no-preference){
   .studio-room{width:clamp(100%,120svh,270vw)}
 }
+
+/* Service tags are labels; use a quiet studio gradient to group them. */
+#services .service-body .tags{gap:8px}
+#services .service-body .tags>span{
+  padding:7px 13px;border:1px solid #cbb5ae;border-radius:999px;
+  background:linear-gradient(125deg,#fbf8f3 12%,#eee4de 61%,#e7c9c1);
+  color:#302522;font-size:clamp(10px,1vw,12px);font-weight:500;letter-spacing:.015em;
+}
