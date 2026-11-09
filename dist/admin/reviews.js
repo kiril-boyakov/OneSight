@@ -13,7 +13,7 @@ async function api(path, options = {}) {
 async function refreshReviews() {
   list.replaceChildren(); status.textContent = 'Loading reviews…';
   try {
-    const { reviews } = await api('/api/reviews?moderation=1&status=' + filter.value);
+    const { reviews, notificationsConfigured, notificationTracking } = await api('/api/reviews?moderation=1&status=' + filter.value);
     status.textContent = reviews.length ? `${reviews.length} ${filter.value} review(s).` : `No ${filter.value} reviews.`;
     for (const review of reviews) {
       const card = document.createElement('article'); card.className = 'review-card';
@@ -31,7 +31,28 @@ async function refreshReviews() {
         });
         actions.append(button);
       }
-      card.append(name, detail, quote, actions); list.append(card);
+      const alert = document.createElement('p');
+      alert.textContent = 'Email alert: ' + ({
+        sent: 'accepted by email provider', failed: 'failed — review is safely stored',
+        pending: 'pending', not_configured: 'not configured'
+      }[review.notification_status] || (notificationTracking ? 'not tracked for this review' : 'tracking setup required'));
+      if (notificationsConfigured && ['failed', 'pending', 'not_configured'].includes(review.notification_status)) {
+        const retry = document.createElement('button'); retry.type = 'button'; retry.className = 'button'; retry.textContent = 'Retry email alert';
+        retry.addEventListener('click', async () => {
+          actions.querySelectorAll('button').forEach(button => button.disabled = true);
+          try {
+            const { notificationStatus } = await api('/api/reviews?notify=1', { method: 'POST', body: JSON.stringify({ id: review.id }) });
+            await refresh();
+            if (notificationStatus !== 'sent') status.textContent = notificationStatus === 'unrecorded'
+              ? 'Email accepted, but the result could not be saved.' : 'The review is saved, but the email alert was not accepted.';
+          } catch (error) {
+            status.textContent = error.message;
+            actions.querySelectorAll('button').forEach(button => button.disabled = false);
+          }
+        });
+        actions.append(retry);
+      }
+      card.append(name, detail, quote, alert, actions); list.append(card);
     }
   } catch (error) { status.textContent = error.message; }
 }

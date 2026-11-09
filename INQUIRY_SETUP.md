@@ -37,3 +37,9 @@ The server uses a honeypot, strict validation, same-origin checks and an atomic 
 No new inquiry has been submitted during development, no mail has been sent, and external configuration/delivery still needs verification.
 
 Official setup references: https://resend.com/docs/dashboard/domains/introduction and https://resend.com/docs/api-reference/emails/send-email
+
+## Review alert tracking
+
+Run `supabase/review-notifications.sql` once in the Supabase SQL Editor. It adds an alert status and a review submission function; it preserves existing reviews and the existing submission function. Until the migration is applied, reviews can still be submitted, but the dashboard cannot track or retry their alerts. Older reviews have no recorded alert status.
+
+After setup, submit a clearly labeled test review and inquiry, confirm both in the private admin dashboard, and verify the alerts in each configured inbox. Leave the test review unpublished.
