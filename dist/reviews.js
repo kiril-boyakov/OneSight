@@ -15,7 +15,7 @@ async function loadReviews() {
       for (const [index, review] of result.reviews.entries()) {
         const card = document.createElement('article'); card.className = 'review-card';
         const top = document.createElement('div'); top.className = 'review-card-top';
-        const label = document.createElement('span'); label.textContent = `${String(index + 1).padStart(2, '0')} / CLIENT PERSPECTIVE`;
+        const label = document.createElement('span'); label.textContent = 'CLIENT REVIEW';
         const mark = document.createElement('span'); mark.className = 'review-quote-mark'; mark.setAttribute('aria-hidden', 'true'); mark.textContent = '“';
         top.append(label, mark);
         const logos = {'krainis digital':'/assets/krainis-digital-logo.svg', 'osti':'/assets/osti-logo.webp'};
