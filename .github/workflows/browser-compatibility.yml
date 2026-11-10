@@ -1,0 +1,107 @@
+name: Browser compatibility
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    name: ${{ matrix.browser }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest, browser: chrome }
+          - { os: windows-latest, browser: msedge }
+          - { os: windows-latest, browser: firefox }
+          - { os: macos-latest, browser: webkit }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser test tools
+        shell: bash
+        run: |
+          npm install --prefix "$RUNNER_TEMP/onesight-browser-qa" --no-audit --no-fund playwright@1.56.1
+          if [[ "${{ matrix.browser }}" == "firefox" || "${{ matrix.browser }}" == "webkit" ]]; then
+            node "$RUNNER_TEMP/onesight-browser-qa/node_modules/playwright/cli.js" install "${{ matrix.browser }}"
+          fi
+      - name: Check desktop and narrow viewports
+        shell: bash
+        env:
+          TEST_BROWSER: ${{ matrix.browser }}
+        run: |
+          cat > "$RUNNER_TEMP/onesight-browser-qa/check.cjs" <<'JS'
+          const { chromium, firefox, webkit } = require('playwright');
+          const assert = require('node:assert/strict');
+          const fs = require('node:fs');
+          const http = require('node:http');
+          const path = require('node:path');
+          const root = path.resolve('dist');
+          const mime = { '.html':'text/html; charset=utf-8', '.css':'text/css', '.js':'text/javascript', '.svg':'image/svg+xml', '.webp':'image/webp', '.png':'image/png', '.woff2':'font/woff2' };
+          const server = http.createServer((req, res) => {
+            const pathname = new URL(req.url, 'http://localhost').pathname;
+            if (pathname.startsWith('/api/')) {
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify(req.method === 'POST' ? {message:'Test inquiry accepted.'} : {ready:true,reviews:[]}));
+              return;
+            }
+            const file = path.resolve(root, '.' + pathname + (pathname.endsWith('/') ? 'index.html' : ''));
+            if (!file.startsWith(root + path.sep)) { res.writeHead(404).end(); return; }
+            fs.readFile(file, (err, data) => {
+              if (err) { res.writeHead(404).end(); return; }
+              res.setHeader('Content-Type', mime[path.extname(file)] || 'application/octet-stream');
+              res.end(data);
+            });
+          });
+          (async () => {
+            await new Promise((resolve, reject) => server.listen(0, '127.0.0.1', resolve).once('error', reject));
+            const base = 'http://127.0.0.1:' + server.address().port;
+            const name = process.env.TEST_BROWSER;
+            const browser = await (name === 'firefox' ? firefox.launch() : name === 'webkit' ? webkit.launch() : chromium.launch({ channel:name }));
+            try {
+              for (const viewport of [{width:1440,height:900},{width:390,height:844}]) {
+                for (const reducedMotion of ['no-preference','reduce']) {
+                  const page = await browser.newPage({ viewport, reducedMotion, hasTouch:viewport.width < 650 });
+                  page.setDefaultTimeout(10000);
+                  try {
+                    const errors = [];
+                    page.on('pageerror', error => errors.push(error.message));
+                    const fits = async () => assert.ok(await page.evaluate(() =>
+                      document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1
+                    ), 'Page overflows horizontally');
+                    await page.goto(base + '/');
+                    await page.locator('h1:visible').first().waitFor();
+                    await fits();
+                    await page.locator('#services summary').nth(1).click();
+                    assert.equal(await page.locator('#services details').nth(1).getAttribute('open'), '');
+                    await page.locator('#review-entry summary').click();
+                    assert.equal(await page.locator('#review-entry').getAttribute('open'), '');
+                    await page.locator('#project-form').scrollIntoViewIfNeeded();
+                    await page.waitForFunction(() => !document.getElementById('inquiry-fields').disabled);
+                    await page.locator('#project-form [name=name]').fill('Browser test');
+                    await page.locator('#project-form [name=email]').fill('browser@example.test');
+                    await page.locator('#project-form [name=description]').fill('Checking that the inquiry form works across browser engines.');
+                    await page.locator('#project-form button[type=submit]').click();
+                    await page.getByText('Test inquiry accepted.', {exact:true}).waitFor();
+                    await page.locator('.privacy-open').click();
+                    await page.locator('#privacy-dialog[open]').waitFor();
+                    await page.locator('#close-privacy').click();
+                    await page.locator('#privacy-dialog').waitFor({state:'hidden'});
+                    await page.goto(base + '/work/');
+                    await page.locator('h1:visible').first().waitFor();
+                    await fits();
+                    assert.deepEqual(errors, []);
+                    console.log(name, viewport.width, reducedMotion, 'passed');
+                  } finally { await page.close(); }
+                }
+              }
+            } finally { await browser.close(); }
+          })().catch(error => { console.error(error); process.exitCode = 1; }).finally(() => server.close());
+          JS
+          node "$RUNNER_TEMP/onesight-browser-qa/check.cjs"
