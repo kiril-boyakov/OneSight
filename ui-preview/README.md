@@ -2,6 +2,10 @@
 
 The live OneSight site serves static HTML and CSS from `dist/`. This standalone preview adds React, TypeScript, Tailwind CSS 4 and a shadcn-compatible layout without changing production pages or the root build.
 
+## Preview the full OneSight website in tweakcn
+
+From the `ui-preview` folder, run `node preview-site.mjs` (no npm install required for this server). Leave that terminal open and paste `http://localhost:5174/` or `http://localhost:5174/work/` into tweakcn's **Custom** preview. This serves the homepage and portfolio from `dist/` with preview-only theme styles. The preview does not submit forms or load live reviews. Some custom effects and artwork retain their original colors. No production files are modified.
+
 ## Run the included preview
 
 Use Node.js 22.12 or newer:
